@@ -1,4 +1,3 @@
-
 package com.example.multitenancy;
 
 import java.util.HashMap;
@@ -41,8 +40,6 @@ public class MultiTenancyJpaConfiguration {
 
     /**
      * Builds a map of all data sources defined in the application.yml file
-     *
-     * @return
      */
     @Primary
     @Bean(name = "dataSourcesMtApp")
@@ -61,24 +58,18 @@ public class MultiTenancyJpaConfiguration {
     }
 
     /**
-     * Autowires the data sources so that they can be used by the Spring JPA to
+     * Auto wires the data sources so that they can be used by the Spring JPA to
      * access the database
-     *
-     * @return
      */
     @Bean
     public MultiTenantConnectionProvider multiTenantConnectionProvider() {
-        // Autowires dataSourcesMtApp
+
         return new DataSourceBasedMultiTenantConnectionProviderImpl();
     }
 
     /**
      * Since this is a multi-tenant application, Hibernate requires that the current
      * tenant identifier is resolved for use with
-     * {@link org.hibernate.context.spi.CurrentSessionContext} and
-     * {@link org.hibernate.SessionFactory#getCurrentSession()}
-     *
-     * @return
      */
     @Bean
     public CurrentTenantIdentifierResolver currentTenantIdentifierResolver() {
@@ -86,20 +77,6 @@ public class MultiTenancyJpaConfiguration {
         return new CurrentTenantIdentifierResolverImpl();
     }
 
-    /**
-     * org.springframework.beans.factory.FactoryBean that creates a JPA
-     * {@link javax.persistence.EntityManagerFactory} according to JPA's standard
-     * container bootstrap contract. This is the most powerful way to set up a
-     * shared JPA EntityManagerFactory in a Spring application context; the
-     * EntityManagerFactory can then be passed to JPA-based DAOs via dependency
-     * injection. Note that switching to a JNDI lookup or to a
-     * {@link org.springframework.orm.jpa.LocalEntityManagerFactoryBean} definition
-     * is just a matter of configuration!
-     *
-     * @param multiTenantConnectionProvider
-     * @param currentTenantIdentifierResolver
-     * @return
-     */
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(
             MultiTenantConnectionProvider multiTenantConnectionProvider,
@@ -123,11 +100,7 @@ public class MultiTenancyJpaConfiguration {
     }
 
     /**
-     * Interface used to interact with the entity manager factory for the
-     * persistence unit.
-     *
-     * @param entityManagerFactoryBean
-     * @return
+     * Interface used to interact with the entity manager factory for the persistence unit.
      */
     @Bean
     public EntityManagerFactory entityManagerFactory(LocalContainerEntityManagerFactoryBean entityManagerFactoryBean) {
@@ -139,15 +112,6 @@ public class MultiTenancyJpaConfiguration {
      * Creates a new
      * {@link org.springframework.orm.jpa.JpaTransactionManager#JpaTransactionManager(EntityManagerFactory emf)}
      * instance.
-     *
-     * {@link org.springframework.transaction.PlatformTransactionManager} is the
-     * central interface in Spring's transaction infrastructure. Applications can
-     * use this directly, but it is not primarily meant as API: Typically,
-     * applications will work with either TransactionTemplate or declarative
-     * transaction demarcation through AOP.
-     *
-     * @param entityManagerFactory
-     * @return
      */
     @Bean
     public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
@@ -157,6 +121,7 @@ public class MultiTenancyJpaConfiguration {
 
     @Bean("customKeyGenerator")
     public KeyGenerator keyGenerator() {
+
         return new CustomCacheKeyGenerator();
     }
 }
